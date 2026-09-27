@@ -1,5 +1,4 @@
 # RepoGuide
-<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/46317bdd-8564-4c2b-b43a-1d44a3c36cea" />
 
 **Turn any unfamiliar codebase into a guided path to your first commit.**
 
@@ -9,6 +8,7 @@ RepoGuide reads a repository, explains its architecture in plain English, surfac
 safe first tasks for a new developer, and answers questions with citations it
 independently verifies against the real source before showing you an answer — plus
 a separate Error Triage tool for ranking likely causes of a stack trace.
+
 
 🔗 **Live demo:** [RepoGuid](https://repoguide-xckc.onrender.com/)
 <img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/05eeb8f1-1feb-414b-8983-4e3719de867f" />
