@@ -22,16 +22,16 @@ a separate Error Triage tool for ranking likely causes of a stack trace.
 
 
 **Dashboard — architecture summary, stats, and first tasks**
-![RepoGuide dashboard](<img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/4a348dbc-1eda-49c9-ba06-72bdbca40546" />
-)
+![RepoGuide dashboard]<img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/4a348dbc-1eda-49c9-ba06-72bdbca40546" />
+
 
 **Grounded Q&A with verified citations**
-![Grounded Q&A with citation verification](<img width="1917" height="896" alt="image" src="https://github.com/user-attachments/assets/68cbf0f4-ccaa-407f-9fba-fc07d2241621" />
-)
+![Grounded Q&A with citation verification]<img width="1917" height="896" alt="image" src="https://github.com/user-attachments/assets/68cbf0f4-ccaa-407f-9fba-fc07d2241621" />
+
 
 **Error Triage — ranked likely causes**
-![Error Triage results table](<img width="1917" height="958" alt="image" src="https://github.com/user-attachments/assets/8c954957-3411-43ca-b0db-40a22514e72c" />
-)
+![Error Triage results table]<img width="1917" height="958" alt="image" src="https://github.com/user-attachments/assets/8c954957-3411-43ca-b0db-40a22514e72c" />
+
 
 ---
 
