@@ -1,83 +1,70 @@
-# Impact Engine
+# RepoGuide
 
-An idea-to-PR agent pipeline built for the IBM Bob 2.0 Hackathon theme:
-**"Build with purpose using IBM Bob 2.0."**
+**Turn any unfamiliar codebase into a guided path to your first commit.**
 
-Type a feature idea. A context agent reads the target repo, a planner splits
-the idea into tasks, builder subagents implement them in parallel, an
-integration step merges and tests the result, and a reviewer agent opens a
-pull request with a plain-English impact report.
+Built for the IBM Bob 2.0 Hackathon theme: *"Build with purpose using IBM Bob 2.0."*
+
+RepoGuide reads a repository, explains its architecture in plain English, surfaces
+safe first tasks for a new developer, and answers questions with citations it
+independently verifies against the real source before showing you an answer — plus
+a separate Error Triage tool for ranking likely causes of a stack trace.
+
+## Features
+
+1. **Dashboard** (`/`) — paste a local repo path or a GitHub URL, get a plain-English
+   architecture summary, a real "% Files Explained" score, a key module/folder list,
+   and 5–8 ranked first tasks (difficulty, file path, reasoning) for a new contributor.
+2. **Grounded Q&A** (same page) — ask anything about the analyzed repo. Every answer
+   comes with `file:line` citations, each independently re-checked by a separate
+   Verifier agent against the actual source before being marked verified or
+   unverified — including honestly saying "I don't have enough information" when the
+   repo genuinely doesn't answer the question, rather than guessing.
+3. **Error Triage** (`/triage`) — paste a stack trace or error log. Regex-based
+   extraction (Python, Node/JS, and Java formats) pulls the exception type, file, and
+   line, then an LLM ranks 3–5 likely causes with confidence scores, shown as a table.
 
 ## Quick start
 
 ```bash
 npm install
 cp .env.example .env
-# fill in .env: at minimum LLM_PROVIDER + the matching API key
-# and TARGET_REPO_PATH pointing at a local git repo you can modify
+# fill in .env: LLM_PROVIDER=gemini (or groq) + the matching API key
+# both have free tiers — no paid API required
 
 npm run dev
 # open http://localhost:3000
 ```
 
-You need a local git repo to point `TARGET_REPO_PATH` at. Easiest option for
-a demo: clone any small sample project (or IBM's own Galaxium Travels demo
-app from the Bob docs) into `./sample-repo`.
+To analyze a repo, either paste a public GitHub URL directly into the dashboard input
+(it clones automatically), or point `TARGET_REPO_PATH` in `.env` at a local repo.
 
 ## Project layout
 
-```
 src/
-  agents/
-    context.ts   -- reads repo, produces architecture summary
-    planner.ts   -- turns an idea into a task list (JSON)
-    builder.ts   -- implements one task, runs concurrently across tasks
-    reviewer.ts  -- writes PR title/body + risk notes
-  gitOps.ts       -- branches, commits, and (optionally) opens a GitHub PR
-  llmClient.ts    -- swappable LLM provider (anthropic / openai / watsonx)
-  index.ts        -- Express server, orchestrates the pipeline end to end
+agents/
+context.ts -- scans a repo, produces an architecture summary + module list
+taskFinder.ts -- finds real first tasks (TODOs, thin test coverage, small files)
+qa.ts -- grounded Q&A: retrieves relevant snippets, cites file:line
+reviewer.ts -- Verifier agent: re-checks each citation against real source
+llmClient.ts -- swappable LLM provider (Gemini / Groq), with retry/backoff
+index.ts -- Express server: POST /analyze, POST /ask, POST /triage
 public/
-  index.html      -- minimal UI: idea box + live stage progress
-```
+index.html -- animated landing page
+app.html -- the dashboard (analyze + Q&A)
+triage.html -- the Error Triage page
 
-## Recommended build order (fits a 48-hour hackathon)
 
-1. Get `context.ts` working first and demo it alone — "point this at any
-   repo and get an architecture summary" is already a compelling standalone
-   feature and de-risks the rest.
-2. Get `planner.ts` working — idea in, task list out. Test with 2-3 example
-   ideas against a small sample repo.
-3. Wire up **one** builder role only (recommend `test` — lowest risk, easiest
-   to verify it worked) end to end through `gitOps.ts`, even if the PR step
-   just commits locally without pushing.
-4. Add the reviewer stage for the impact report.
-5. Only if time remains: add the second and third builder roles to actually
-   show parallel subagents running together.
-6. Polish the UI last, not first.
+## Built with IBM Bob 2.0
 
-## Using this with IBM Bob IDE
-
-Build this project inside Bob IDE so your task session summaries reflect
-real work on it. Suggested prompts to give Bob as you go:
-
-- `/init` early, so Bob keeps project context (generates AGENTS.md)
-- "Explain how the pipeline in src/index.ts flows end to end"
-- "Add error handling and a timeout to buildTask in src/agents/builder.ts"
-- "Write unit tests for planTasks in src/agents/planner.ts"
-- "Review my changes to gitOps.ts for security issues before I commit"
-
-Remember: screenshot each task's session summary (Tasks panel → select task
-→ click header) and save PNGs into `bob_sessions/` in this repo before you
-submit — that folder is required for judging eligibility.
+Bob was used in Agent mode throughout development to build the context, task-finding,
+Q&A, and citation-verification agents; to debug real issues (a JSON-escaping bug fixed
+by switching to a delimited output format, a rate-limit retry system, and a citation
+line-range parsing bug); and to build the entire Error Triage feature end-to-end.
+Task session evidence is in [`bob_sessions/`](./bob_sessions).
 
 ## Notes
 
-- The `LLM_PROVIDER=watsonx` path in `llmClient.ts` is a stub — fill in your
-  hackathon-provisioned watsonx.ai project id and IAM token exchange if you
-  want to use it for bonus points (it's optional, not required).
-- `gitOps.ts` will skip the actual GitHub PR creation if `GITHUB_TOKEN` /
-  `GITHUB_REPO` aren't set, so you can demo the local diff without needing
-  push access configured during early development.
-- Data-set rules for this hackathon: bring your own repo/data, no client or
-  confidential data, no personal information, nothing scraped from social
-  media.
+- Free-tier LLM APIs (Gemini/Groq) are rate-limited — if you hit a 429/503, the app
+  retries automatically using the provider's suggested delay.
+- No client, confidential, or personal data is used or required — analyze any public
+  repository or your own local project.
