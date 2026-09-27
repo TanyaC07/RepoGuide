@@ -1,0 +1,212 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RepoGuide</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --surface: #07090d; --surface-container: #141a24; --surface-container-high: #212a38;
+    --on-surface: #e9edf7; --on-surface-variant: #9aa7b8;
+    --primary: #4edea3; --secondary: #7bd0ff; --tertiary: #ffb95f;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--surface); color: var(--on-surface); font-family: Geist, -apple-system, sans-serif; line-height: 1.6; overflow-x: hidden; position: relative; cursor: default; }
+  code, .mono { font-family: "JetBrains Mono", monospace; }
+
+  canvas#bg { position: fixed; inset: 0; z-index: 0; }
+  .cursor-glow { position: fixed; width: 500px; height: 500px; border-radius: 50%; pointer-events: none; z-index: 1;
+    background: radial-gradient(circle, rgba(78,222,163,0.10), transparent 70%); transform: translate(-50%,-50%); transition: opacity 0.3s; }
+
+  nav { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 20px 44px; border-bottom: 1px solid var(--surface-container-high); backdrop-filter: blur(8px); }
+  .brand-mark { display: flex; align-items: center; gap: 14px; }
+  .brand-mark svg { width: 40px; height: 40px; flex-shrink: 0; }
+  .brand-mark .word { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
+  .brand-mark .word .repo { color: var(--on-surface); }
+  .brand-mark .word .guide { color: var(--primary); }
+  .brand-mark .tagline { font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: 0.12em; color: var(--on-surface-variant); margin-top: 2px; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  nav a.cta { background: var(--primary); color: #002417; text-decoration: none; padding: 10px 20px; border-radius: 7px; font-size: 13px; font-weight: 700; font-family: "JetBrains Mono", monospace; box-shadow: 0 0 20px rgba(78,222,163,0.35); transition: transform 0.2s; }
+  nav a.cta:hover { transform: scale(1.05); }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  .hero { position: relative; z-index: 2; max-width: 840px; margin: 0 auto; text-align: center; padding: 120px 24px 50px; }
+  .hero .eyebrow { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--primary); letter-spacing: 0.06em; margin-bottom: 22px; border: 1px solid rgba(78,222,163,0.3); background: rgba(78,222,163,0.08); padding: 6px 14px; border-radius: 100px; }
+  .hero h1 {
+    font-size: 60px; font-weight: 800; margin: 0 0 22px; letter-spacing: -0.03em; line-height: 1.05;
+    background: linear-gradient(120deg, var(--on-surface) 30%, var(--primary), var(--secondary));
+    background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: shine 6s linear infinite;
+  }
+  @keyframes shine { to { background-position: 200% center; } }
+  .hero p { color: var(--on-surface-variant); font-size: 18px; margin: 0 auto 38px; max-width: 56ch; }
+  .hero .cta-row { display: flex; gap: 14px; justify-content: center; }
+  .hero .cta { display: inline-block; background: var(--primary); color: #002417; text-decoration: none; padding: 15px 32px; border-radius: 8px; font-size: 16px; font-weight: 700; font-family: "JetBrains Mono", monospace; box-shadow: 0 0 30px rgba(78,222,163,0.4); transition: transform 0.2s; }
+  .hero .cta:hover { transform: translateY(-3px) scale(1.03); }
+  .hero .cta.ghost { background: transparent; color: var(--on-surface); border: 1px solid var(--surface-container-high); box-shadow: none; }
+  .hero .cta.ghost:hover { border-color: var(--primary); }
+
+  .stats-strip { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; display: flex; justify-content: center; gap: 64px; padding: 30px 24px 70px; }
+  .stats-strip .stat { text-align: center; }
+  .stats-strip .num { font-family: "JetBrains Mono", monospace; font-size: 36px; font-weight: 700; color: var(--primary); }
+  .stats-strip .label { font-size: 12.5px; color: var(--on-surface-variant); margin-top: 4px; }
+
+  .problem { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; padding: 30px 24px 60px; border-top: 1px solid var(--surface-container-high); }
+  .problem p { font-size: 16px; color: var(--on-surface-variant); text-align: center; }
+
+  .bento { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; padding: 20px 24px 80px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; perspective: 1000px; }
+  .bento .card { background: var(--surface-container); border: 1px solid var(--surface-container-high); border-radius: 14px; padding: 26px; transition: transform 0.15s ease-out, border-color 0.25s; transform-style: preserve-3d; }
+  .bento .card:hover { border-color: var(--primary); }
+  .bento .card.wide { grid-column: span 4; }
+  .bento .card.narrow { grid-column: span 2; }
+  .bento .card .num { font-family: "JetBrains Mono", monospace; color: var(--primary); font-size: 12px; margin-bottom: 10px; }
+  .bento .card h3 { font-size: 17px; margin: 0 0 10px; }
+  .bento .card p { font-size: 13.5px; color: var(--on-surface-variant); margin: 0; }
+
+  .proof { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; padding: 20px 24px 100px; }
+  .proof h2 { font-size: 22px; margin: 0 0 20px; text-align: center; }
+  .proof-panel { background: var(--surface-container); border: 1px solid var(--surface-container-high); border-radius: 12px; padding: 24px 26px; font-size: 14.5px; box-shadow: 0 0 40px rgba(78,222,163,0.05); }
+  .proof-panel .q { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--on-surface-variant); margin-bottom: 12px; }
+  .citations { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .citation { font-family: "JetBrains Mono", monospace; font-size: 11.5px; border-radius: 5px; padding: 5px 11px; color: var(--primary); border: 1px solid rgba(78,222,163,0.3); background: rgba(78,222,163,0.08); }
+
+  footer { position: relative; z-index: 2; text-align: center; padding: 30px; color: var(--on-surface-variant); font-size: 12.5px; font-family: "JetBrains Mono", monospace; border-top: 1px solid var(--surface-container-high); }
+
+  @media (max-width: 720px) {
+    .hero h1 { font-size: 38px; } .bento { grid-template-columns: 1fr; }
+    .bento .card.wide, .bento .card.narrow { grid-column: span 1; } .stats-strip { gap: 32px; }
+    .cursor-glow { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="cursor-glow" id="glow"></div>
+
+<nav>
+  <div class="brand-mark">
+    <svg viewBox="0 0 48 48" fill="none">
+      <path d="M10 8 V34 Q10 40 16 40 H38" stroke="#4edea3" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="18" cy="14" r="4" fill="#0a0f14" stroke="#4edea3" stroke-width="2.5"/>
+      <circle cx="32" cy="10" r="3.5" fill="#0a0f14" stroke="#4edea3" stroke-width="2.5"/>
+      <circle cx="30" cy="24" r="3.5" fill="#0a0f14" stroke="#4edea3" stroke-width="2.5"/>
+      <path d="M21.5 13 L28.5 10.8 M21 16 L27 22.5" stroke="#4edea3" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="word"><span class="repo">Repo</span><span class="guide">Guide</span></div>
+    </div>
+  </div>
+  <a class="cta" href="app.html">Launch App</a>
+</nav>
+
+<section class="hero reveal in">
+  <div class="brand-mark" style="justify-content:center; margin-bottom: 28px;">
+    <svg viewBox="0 0 48 48" fill="none" style="width:56px;height:56px;">
+      <path d="M10 8 V34 Q10 40 16 40 H38" stroke="#4edea3" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="18" cy="14" r="4" fill="#0a0f14" stroke="#4edea3" stroke-width="2.5"/>
+      <circle cx="32" cy="10" r="3.5" fill="#0a0f14" stroke="#4edea3" stroke-width="2.5"/>
+      <circle cx="30" cy="24" r="3.5" fill="#0a0f14" stroke="#4edea3" stroke-width="2.5"/>
+      <path d="M21.5 13 L28.5 10.8 M21 16 L27 22.5" stroke="#4edea3" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="word" style="font-size:38px;"><span class="repo">Repo</span><span class="guide">Guide</span></div>
+      <div class="tagline">VERIFIED CODEBASE ONBOARDING</div>
+    </div>
+  </div>
+  <h1>Turn any unfamiliar codebase into a guided path to your first commit.</h1>
+  <p>RepoGuide reads a repository, explains its architecture in plain English, surfaces safe first tasks for a new developer, and answers questions with citations it independently re-checks against the real source before showing you an answer.</p>
+  <div class="cta-row">
+    <a class="cta" href="app.html">Launch RepoGuide →</a>
+    <a class="cta ghost" href="/triage">Try Error Triage</a>
+  </div>
+</section>
+
+<div class="stats-strip reveal">
+  <div class="stat"><div class="num" data-count="24">0</div><div class="label">% Files Explained</div></div>
+  <div class="stat"><div class="num" data-count="7">0</div><div class="label">First Tasks Found</div></div>
+  <div class="stat"><div class="num" data-count="100">0</div><div class="label">% Citations Verified</div></div>
+</div>
+
+<section class="problem reveal">
+  <p>New developers routinely lose days to weeks reading through an unfamiliar codebase before their first meaningful commit. RepoGuide compresses that ramp-up into minutes — and unlike a general-purpose chatbot, it doesn't guess: every citation is re-checked against the actual file before being shown.</p>
+</section>
+
+<section class="bento">
+  <div class="card wide reveal"><div class="num">01 · ANALYZE</div><h3>Point it at any repo</h3><p>Paste a local path or a GitHub URL. RepoGuide reads the structure and produces a plain-English architecture summary with a real coverage score.</p></div>
+  <div class="card narrow reveal"><div class="num">02 · ONBOARD</div><h3>Real first tasks</h3><p>Ranked by difficulty, pulled from actual TODOs and thin test coverage.</p></div>
+  <div class="card narrow reveal"><div class="num">03 · ASK</div><h3>Ask anything</h3><p>Grounded answers, not hallucinations.</p></div>
+  <div class="card wide reveal"><div class="num">04 · TRIAGE</div><h3>Paste a stack trace, get ranked causes</h3><p>Real regex-based extraction across Python, Node/JS, and Java, ranked by confidence with reasoning.</p></div>
+</section>
+
+<section class="proof reveal">
+  <h2>A real, verified answer</h2>
+  <div class="proof-panel">
+    <div class="q">Question asked against a real public repository</div>
+    <div>"What does the modelopt plugin do and where are skills defined?" — RepoGuide traced the actual plugin registration files, then verified each citation before displaying the answer.</div>
+    <div class="citations">
+      <span class="citation">✓ agents/README.md:8-11 verified</span>
+      <span class="citation">✓ claude-plugin/marketplace.json:1-13 verified</span>
+    </div>
+  </div>
+</section>
+
+<footer>REPOGUIDE · BUILT WITH IBM BOB 2.0</footer>
+
+<script>
+  // Cursor-tracked glow
+  const glow = document.getElementById('glow');
+  window.addEventListener('mousemove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+
+  // Tilt effect on bento cards
+  document.querySelectorAll('.bento .card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+    });
+    card.addEventListener('mouseleave', () => card.style.transform = 'rotateY(0) rotateX(0)');
+  });
+
+  // Scroll-reveal
+  const io = new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('in')), { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Animated stat counters
+  document.querySelectorAll('.stats-strip .num').forEach(el => {
+    const target = parseInt(el.dataset.count, 10);
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 40));
+    const tick = () => { current = Math.min(target, current + step); el.textContent = current; if (current < target) requestAnimationFrame(tick); };
+    io.observe(el.closest('.stats-strip'));
+    requestAnimationFrame(tick);
+  });
+
+  // Particle canvas background
+  const canvas = document.getElementById('bg'), ctx = canvas.getContext('2d');
+  let w, h, particles;
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  function initParticles() {
+    particles = Array.from({ length: 60 }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(78,222,163,0.35)';
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); initParticles(); draw();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+</script>
+</body>
+</html>

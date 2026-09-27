@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RepoGuide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d1117;
+    --surface:   #161b22;
+    --border:    #30363d;
+    --text:      #e6edf3;
+    --muted:     #8b949e;
+    --accent:    #3b82f6;
+    --accent-dim:#1d4ed8;
+    --easy:      #238636;
+    --medium:    #9a6700;
+    --hard:      #b62324;
+    --verified:  #238636;
+    --warn:      #9a6700;
+    --radius:    8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* ── Header ── */
+  header { margin-bottom: 36px; }
+  header h1 { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  header p  { margin-top: 4px; color: var(--muted); font-size: 14px; }
+
+  /* ── Section wrappers ── */
+  section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  section h2 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* ── Inputs ── */
+  .input-row { display: flex; gap: 10px; }
+  input[type="text"] {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 14px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 14px;
+    padding: 9px 12px;
+    resize: vertical;
+    min-height: 72px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--muted); }
+
+  button {
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 18px;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  button:hover:not(:disabled) { background: var(--accent-dim); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ── Progress pip ── */
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 12px;
+    min-height: 20px;
+  }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Summary & module list ── */
+  .summary-text { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 16px; }
+  .module-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .module-list li {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    align-items: baseline;
+  }
+  .module-path {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .module-desc { color: var(--muted); }
+
+  /* ── Stat bar ── */
+  .stat-bar {
+    display: flex;
+    gap: 24px;
+    padding: 14px 0 2px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--muted); }
+
+  /* ── Task cards ── */
+  .task-grid { display: flex; flex-direction: column; gap: 10px; }
+  .task-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 12px;
+    align-items: start;
+  }
+  .task-title { font-size: 14px; font-weight: 600; grid-column: 1; }
+  .task-path {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    grid-column: 1;
+  }
+  .task-reason { font-size: 13px; color: var(--muted); grid-column: 1; margin-top: 4px; }
+  .difficulty-badge {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .diff-easy   { background: #0f2a14; color: #3fb950; border: 1px solid #238636; }
+  .diff-medium { background: #2b1d0e; color: #d29922; border: 1px solid #9a6700; }
+  .diff-hard   { background: #2d0f0f; color: #f85149; border: 1px solid #b62324; }
+
+  /* ── Q&A ── */
+  .ask-row { display: flex; gap: 10px; flex-direction: column; }
+  .ask-controls { display: flex; gap: 10px; }
+
+  .answer-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 14px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: none;
+    margin-top: 14px;
+  }
+
+  .citations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .citation-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    border: 1px solid;
+  }
+  .citation-ok   { background: #0f2a14; color: #3fb950; border-color: #238636; }
+  .citation-warn { background: #2b1d0e; color: #d29922; border-color: #9a6700; }
+  .citation-icon { font-size: 13px; }
+
+  .pass-rate-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .pass-rate-value { font-size: 18px; font-weight: 700; color: var(--text); }
+
+  /* ── Hidden until needed ── */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <svg viewBox="0 0 48 48" fill="none" style="width:28px;height:28px;flex-shrink:0;">
+        <path d="M10 8 V34 Q10 40 16 40 H38" stroke="#4edea3" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="18" cy="14" r="4" fill="#0d1117" stroke="#4edea3" stroke-width="2.5"/>
+        <circle cx="32" cy="10" r="3.5" fill="#0d1117" stroke="#4edea3" stroke-width="2.5"/>
+        <circle cx="30" cy="24" r="3.5" fill="#0d1117" stroke="#4edea3" stroke-width="2.5"/>
+        <path d="M21.5 13 L28.5 10.8 M21 16 L27 22.5" stroke="#4edea3" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <h1 style="margin:0;"><span style="color:#e6edf3;">Repo</span><span style="color:#4edea3;">Guide</span></h1>
+    </div>
+    <p>Onboard any codebase — get an architecture summary, ranked first-tasks, and grounded Q&amp;A.</p>
+</header>
+<div style="text-align:center;padding:40px 20px;color:var(--muted);border:1px dashed var(--border);border-radius:8px;margin-bottom:20px;">
+  <div style="font-size:32px;margin-bottom:10px;">🧭</div>
+  <div style="font-size:14px;">Paste a repo path or GitHub URL above to generate an architecture summary, ranked first tasks, and a grounded Q&amp;A session.</div>
+</div>
+
+  <!-- ① Analyze input -->
+  <section id="sec-analyze">
+    <h2>Repository</h2>
+    <div class="input-row">
+      <input type="text" id="repo-path" placeholder="Repo path (default: ./sample-repo)" />
+      <button id="btn-analyze">Analyze</button>
+    </div>
+    <div class="progress hidden" id="analyze-progress">
+      <div class="spinner"></div>
+      <span id="analyze-stage"></span>
+    </div>
+  </section>
+
+  <!-- ② Summary + stat bar -->
+  <section id="sec-summary" class="hidden">
+    <h2>Architecture Summary</h2>
+    <p class="summary-text" id="summary-text"></p>
+    <ul class="module-list" id="module-list"></ul>
+    <div class="stat-bar">
+      <div class="stat">
+        <span class="stat-value" id="stat-explained">—</span>
+        <span class="stat-label">% files explained</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-tasks">—</span>
+        <span class="stat-label">first tasks found</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-files">—</span>
+        <span class="stat-label">files scanned</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ Task cards -->
+  <section id="sec-tasks" class="hidden">
+    <h2>First Tasks for New Developers</h2>
+    <div class="task-grid" id="task-grid"></div>
+  </section>
+
+  <!-- ④ Q&A -->
+  <section id="sec-ask" class="hidden">
+    <h2>Ask a Question</h2>
+    <div class="ask-row">
+      <div class="ask-controls">
+        <textarea id="question" placeholder="e.g. Where is the rate-limiting logic?"></textarea>
+      </div>
+      <div class="ask-controls">
+        <button id="btn-ask">Ask</button>
+      </div>
+    </div>
+    <div class="progress hidden" id="ask-progress">
+      <div class="spinner"></div>
+      <span id="ask-stage"></span>
+    </div>
+    <div class="answer-block" id="answer-block"></div>
+    <div class="citations-list hidden" id="citations-list"></div>
+    <div class="pass-rate-bar hidden" id="pass-rate-bar">
+      <span>Session citation pass rate:</span>
+      <span class="pass-rate-value" id="pass-rate-value">—</span>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  function show(id)  { document.getElementById(id).classList.remove("hidden"); }
+  function hide(id)  { document.getElementById(id).classList.add("hidden"); }
+  function el(id)    { return document.getElementById(id); }
+  function esc(str)  { return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  // Reads an NDJSON streaming response and calls onLine for each parsed object.
+  async function readNDJSON(response, onLine) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop(); // last (possibly incomplete) chunk
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        onLine(JSON.parse(line));
+      }
+    }
+  }
+
+  // ── /analyze ──────────────────────────────────────────────────────────────
+
+  el("btn-analyze").addEventListener("click", async () => {
+    const repoPath = el("repo-path").value.trim() || null;
+
+    // Reset result sections
+    hide("sec-summary");
+    hide("sec-tasks");
+    hide("sec-ask");
+    el("btn-analyze").disabled = true;
+    show("analyze-progress");
+    el("analyze-stage").textContent = "Starting…";
+
+    try {
+      const res = await fetch("/analyze", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(repoPath ? { repoPath } : {})
+      });
+
+      await readNDJSON(res, ({ event, data }) => {
+        if (event === "stage") {
+          const labels = { context: "Analysing repo…", task_finding: "Finding first tasks…" };
+          el("analyze-stage").textContent = labels[data] || data;
+        }
+
+        if (event === "context_done") {
+          el("summary-text").textContent = data.summary;
+
+          const ul = el("module-list");
+          ul.innerHTML = "";
+          for (const entry of (data.moduleList || [])) {
+            const colon = entry.indexOf(":");
+            if (colon === -1) continue;
+            const path = esc(entry.slice(0, colon).trim());
+            const desc = esc(entry.slice(colon + 1).trim());
+            ul.insertAdjacentHTML("beforeend",
+              `<li><span class="module-path">${path}</span><span class="module-desc">${desc}</span></li>`);
+          }
+          show("sec-summary");
+        }
+
+        if (event === "tasks_done") {
+          const grid = el("task-grid");
+          grid.innerHTML = "";
+          for (const task of (data.tasks || [])) {
+            const diff = esc(task.difficulty || "");
+            const diffClass = { easy: "diff-easy", medium: "diff-medium", hard: "diff-hard" }[task.difficulty] || "diff-medium";
+            grid.insertAdjacentHTML("beforeend", `
+              <div class="task-card">
+                <span class="task-title">${esc(task.title)}</span>
+                <span class="difficulty-badge ${diffClass}">${diff}</span>
+                <span class="task-path">${esc(task.filePath)}</span>
+                <span class="task-reason">${esc(task.reason)}</span>
+              </div>`);
+          }
+          show("sec-tasks");
+        }
+
+        if (event === "done") {
+          const sc = data.scorecard || {};
+          el("stat-explained").textContent = sc.percentExplained != null ? sc.percentExplained + "%" : "—";
+          el("stat-tasks").textContent     = sc.taskCount      != null ? sc.taskCount               : "—";
+          el("stat-files").textContent     = sc.filesScanned   != null ? sc.filesScanned             : "—";
+          show("sec-ask");
+        }
+      });
+
+    } catch (err) {
+      alert("Analyze failed: " + err.message);
+    } finally {
+      el("btn-analyze").disabled = false;
+      hide("analyze-progress");
+    }
+  });
+
+  // ── /ask ──────────────────────────────────────────────────────────────────
+
+  el("btn-ask").addEventListener("click", async () => {
+    const question = el("question").value.trim();
+    if (!question) { el("question").focus(); return; }
+    const repoPath = el("repo-path").value.trim() || null;
+
+    // Reset answer area
+    const answerBlock = el("answer-block");
+    answerBlock.style.display = "none";
+    answerBlock.textContent = "";
+    hide("citations-list");
+    hide("pass-rate-bar");
+
+    el("btn-ask").disabled = true;
+    show("ask-progress");
+    el("ask-stage").textContent = "Thinking…";
+
+    try {
+      const res = await fetch("/ask", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(repoPath ? { question, repoPath } : { question })
+      });
+
+      await readNDJSON(res, ({ event, data }) => {
+        if (event === "stage") {
+          const labels = { answering: "Answering…", verifying: "Verifying citations…" };
+          el("ask-stage").textContent = labels[data] || data;
+        }
+
+        if (event === "answer_done") {
+          answerBlock.textContent = data.answer || "";
+          answerBlock.style.display = "block";
+        }
+
+        if (event === "done") {
+          // Update answer (may be same as answer_done, keeps display in sync)
+          if (data.answer) {
+            answerBlock.textContent = data.answer;
+            answerBlock.style.display = "block";
+          }
+
+          // Render citation badges
+          const citations = data.citations || [];
+          if (citations.length > 0) {
+            const list = el("citations-list");
+            list.innerHTML = "";
+            for (const vc of citations) {
+              const c = vc.citation;
+              const ok = vc.verified;
+              const cls   = ok ? "citation-ok"   : "citation-warn";
+              const icon  = ok ? "✓" : "⚠";
+              list.insertAdjacentHTML("beforeend",
+                `<span class="citation-badge ${cls}">
+                  <span class="citation-icon">${icon}</span>${esc(c.file)}:${esc(c.line)}
+                </span>`);
+            }
+            show("citations-list");
+          }
+
+          // Update session pass rate
+          if (data.sessionPassRate != null) {
+            el("pass-rate-value").textContent = data.sessionPassRate + "%";
+            show("pass-rate-bar");
+          }
+        }
+
+        if (event === "error") {
+          answerBlock.textContent = "Error: " + (data.message || "unknown error");
+          answerBlock.style.display = "block";
+        }
+      });
+
+    } catch (err) {
+      answerBlock.textContent = "Request failed: " + err.message;
+      answerBlock.style.display = "block";
+    } finally {
+      el("btn-ask").disabled = false;
+      hide("ask-progress");
+    }
+  });
+
+  // Allow Ctrl+Enter / Cmd+Enter to submit the question
+  el("question").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) el("btn-ask").click();
+  });
+</script>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-1;"></canvas>
+<div id="cursor-glow" style="position:fixed;width:500px;height:500px;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle, rgba(78,222,163,0.10), transparent 70%); transform:translate(-50%,-50%);"></div>
+<script>
+  const glow = document.getElementById('cursor-glow');
+  window.addEventListener('mousemove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+
+  const canvas = document.getElementById('bg-canvas'), ctx = canvas.getContext('2d');
+  let w, h, particles;
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  function initParticles() {
+    particles = Array.from({ length: 50 }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(78,222,163,0.25)';
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); initParticles(); draw();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+</script>
+</body>
+</html>

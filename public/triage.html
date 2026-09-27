@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <style>
+    @layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-bright": "#353942", "surface-variant": "#31353e", "on-surface": "#dfe2ee", "on-primary": "#003824", "error": "#ffb4ab", "surface-container-lowest": "#0a0e16", "surface-dim": "#0f131c", "surface-tint": "#4edea3", "background": "#0f131c", "outline": "#86948a", "outline-variant": "#3c4a42", "surface-container": "#1c2028", "tertiary-fixed-dim": "#ffb95f", "surface-container-low": "#181c24", "inverse-primary": "#006c49", "secondary": "#7bd0ff", "surface": "#0f131c", "on-background": "#dfe2ee", "primary-container": "#10b981", "primary-fixed-dim": "#4edea3", "surface-container-high": "#262a33", "primary": "#4edea3", "on-primary-container": "#00422b", "tertiary-container": "#e29100", "surface-container-highest": "#31353e", "on-surface-variant": "#bbcabf", "error-container": "#93000a", "primary-fixed": "#6ffbbe", "tertiary": "#ffb95f" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xl": "1.5rem", "space-sm": "0.5rem", "space-2xs": "0.125rem", "space-2xl": "2rem", "space-md": "0.75rem", "space-xs": "0.25rem", "gutter": "1rem", "space-lg": "1rem" }, "fontFamily": { "headline-sm": ["Geist"], "label-ui": ["Geist"], "body-md": ["Geist"], "headline-md": ["Geist"], "body-sm": ["Geist"], "headline-lg": ["Geist"], "label-code": ["JetBrains Mono"], "code-inline": ["JetBrains Mono"] }, "fontSize": { "headline-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "label-ui": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "500" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400" }], "label-code": ["11px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "code-inline": ["13px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "400" }] } } } };
+  </script>
+</head>
+<body class="bg-surface font-body-md text-body-md text-on-surface min-h-screen antialiased">
+
+<!-- Fixed nav header — identical structure to main app -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-dim/90 backdrop-blur-md border-b border-surface-container-highest">
+  <div class="h-14 max-w-6xl mx-auto px-gutter flex items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-md shrink-0">
+      <a class="flex items-center gap-space-xs text-on-surface hover:text-primary transition-colors" href="/">
+        <svg viewBox="0 0 48 48" fill="none" style="width:20px;height:20px;flex-shrink:0;">
+          <path d="M10 8 V34 Q10 40 16 40 H38" stroke="#4edea3" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="18" cy="14" r="4" fill="#0f131c" stroke="#4edea3" stroke-width="2.5"/>
+          <circle cx="32" cy="10" r="3.5" fill="#0f131c" stroke="#4edea3" stroke-width="2.5"/>
+          <circle cx="30" cy="24" r="3.5" fill="#0f131c" stroke="#4edea3" stroke-width="2.5"/>
+          <path d="M21.5 13 L28.5 10.8 M21 16 L27 22.5" stroke="#4edea3" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="font-headline-sm text-headline-sm font-semibold tracking-tight"><span class="text-on-surface">Repo</span><span class="text-primary">Guide</span></span>
+      </a>
+      <span class="font-label-code text-label-code px-space-xs py-space-2xs rounded bg-surface-container-high border border-outline-variant text-on-surface-variant font-medium tracking-wide">v1.2.0-beta</span>
+    </div>
+    <nav class="hidden sm:flex items-center gap-space-xs">
+      <a class="px-space-sm py-space-2xs rounded font-label-ui text-label-ui text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" href="/">Overview</a>
+      <a class="px-space-sm py-space-2xs rounded font-label-ui transition-colors bg-surface-container text-on-surface flex items-center gap-1" href="/triage" aria-current="page">
+        <span class="material-symbols-outlined text-[13px]">bug_report</span>Triage
+      </a>
+    </nav>
+    <a class="hidden sm:flex items-center gap-space-xs px-space-sm py-space-2xs rounded font-label-ui text-label-ui text-on-surface-variant hover:text-on-surface border border-surface-container-highest hover:border-outline transition-colors" href="/">
+      <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+      Back to RepoGuide
+    </a>
+  </div>
+</header>
+
+<main class="w-full pt-14 bg-surface">
+  <div class="max-w-3xl mx-auto px-gutter py-space-2xl flex flex-col gap-space-2xl">
+
+    <!-- Page header -->
+    <div class="relative flex flex-col gap-space-md pb-space-2xl border-b border-surface-container-highest">
+      <div class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[500px] h-[240px] bg-error/5 blur-[120px] rounded-full"></div>
+      <div class="flex items-center gap-space-sm">
+        <div class="w-10 h-10 rounded-xl bg-error-container/20 border border-error/20 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-error text-[20px]">bug_report</span>
+        </div>
+        <div>
+          <h1 class="font-headline-lg text-headline-lg tracking-tight text-on-surface">Error Triage</h1>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Paste a stack trace or error log — get ranked likely causes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input card -->
+    <div class="flex flex-col gap-space-md p-space-xl rounded-xl bg-surface-container-low border border-surface-container-highest shadow-lg">
+      <div class="flex items-center gap-space-xs border-b border-surface-container-highest pb-space-sm">
+        <span class="material-symbols-outlined text-primary text-[18px]">terminal</span>
+        <span class="font-headline-sm text-headline-sm font-semibold text-on-surface">Stack Trace Input</span>
+        <span class="ml-auto font-label-code text-label-code text-outline">Python · Node/JS · Java</span>
+      </div>
+      <textarea
+        id="trace-input"
+        rows="12"
+        class="w-full bg-surface-container border border-surface-container-highest rounded-lg px-space-md py-space-sm font-code-inline text-code-inline text-on-surface placeholder:text-outline focus:outline-none focus:border-primary/50 resize-y"
+        placeholder="Paste your error log or stack trace here…
+
+Example (Python):
+Traceback (most recent call last):
+  File &quot;app/routes.py&quot;, line 42, in handle_request
+    result = db.query(sql)
+AttributeError: 'NoneType' object has no attribute 'query'"
+      ></textarea>
+      <div class="flex items-center justify-between">
+        <span id="parse-hint" class="font-label-code text-label-code text-outline italic">Paste a trace to begin.</span>
+        <button
+          id="triage-btn"
+          class="flex items-center gap-space-xs px-space-xl py-3 rounded-lg bg-error-container/30 hover:bg-error-container/50 text-error border border-error/30 hover:border-error/60 font-body-md text-body-md font-semibold transition-all duration-200 active:scale-[0.98] cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-[18px]">search</span>
+          <span>Triage Error</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results card (hidden until a response arrives) -->
+    <div id="results-section" class="hidden flex flex-col gap-space-md">
+      <div class="flex items-center gap-space-xs pb-space-sm border-b border-surface-container-highest">
+        <span class="material-symbols-outlined text-tertiary text-[18px]">format_list_numbered</span>
+        <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Likely Causes</h2>
+        <span id="results-meta" class="ml-auto font-label-code text-label-code text-outline"></span>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-surface-container-highest">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-surface-container border-b border-surface-container-highest">
+              <th class="px-space-md py-space-sm font-label-ui text-label-ui text-outline uppercase tracking-wider w-12">Rank</th>
+              <th class="px-space-md py-space-sm font-label-ui text-label-ui text-outline uppercase tracking-wider">Likely Cause</th>
+              <th class="px-space-md py-space-sm font-label-ui text-label-ui text-outline uppercase tracking-wider w-28">Confidence</th>
+              <th class="px-space-md py-space-sm font-label-ui text-label-ui text-outline uppercase tracking-wider">Reasoning</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Error display -->
+    <div id="error-section" class="hidden p-space-lg rounded-xl bg-error-container/10 border border-error/20 flex items-start gap-space-sm">
+      <span class="material-symbols-outlined text-error text-[18px] shrink-0 mt-0.5">error</span>
+      <p id="error-text" class="font-body-sm text-body-sm text-error leading-relaxed"></p>
+    </div>
+
+  </div>
+</main>
+
+<footer class="w-full border-t border-surface-container-highest bg-surface-container-lowest mt-space-2xl">
+  <div class="max-w-6xl mx-auto px-gutter py-space-lg flex items-center justify-between gap-space-md">
+    <span class="font-label-ui text-label-ui text-on-surface-variant">© 2025 RepoGuide Engine</span>
+    <a class="font-label-ui text-label-ui text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1" href="/">
+      <span class="material-symbols-outlined text-[13px]">arrow_back</span> Back to RepoGuide
+    </a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const traceInput   = document.getElementById('trace-input');
+  const triageBtn    = document.getElementById('triage-btn');
+  const parseHint    = document.getElementById('parse-hint');
+  const resultsSection = document.getElementById('results-section');
+  const resultsBody  = document.getElementById('results-body');
+  const resultsMeta  = document.getElementById('results-meta');
+  const errorSection = document.getElementById('error-section');
+  const errorText    = document.getElementById('error-text');
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Confidence → colour class
+  function confidenceClass(n) {
+    if (n >= 70) return 'text-primary';
+    if (n >= 40) return 'text-tertiary';
+    return 'text-error';
+  }
+
+  // Live parse hint: detect which stack-trace format is present as the user types
+  traceInput.addEventListener('input', function () {
+    const v = traceInput.value;
+    if (/File ".+?", line \d+/m.test(v))            parseHint.textContent = 'Python traceback detected';
+    else if (/at .+? \(.+?:\d+:\d+\)/m.test(v))     parseHint.textContent = 'Node / JS stack trace detected';
+    else if (/at [\w$.]+\([\w$.]+\.java:\d+\)/m.test(v)) parseHint.textContent = 'Java stack trace detected';
+    else if (v.trim().length > 0)                    parseHint.textContent = 'Generic error log — will attempt extraction';
+    else                                             parseHint.textContent = 'Paste a trace to begin.';
+  });
+
+  const ORIG_BTN = triageBtn.innerHTML;
+
+  async function runTriage() {
+    const trace = traceInput.value.trim();
+    if (!trace) { traceInput.focus(); return; }
+
+    triageBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Analysing…</span>';
+    triageBtn.disabled = true;
+    resultsSection.classList.add('hidden');
+    errorSection.classList.add('hidden');
+
+    try {
+      const res = await fetch('/triage', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ trace }),
+      });
+      const json = await res.json();
+      if (!res.ok || json.error) {
+        throw new Error(json.error || `Server error ${res.status}`);
+      }
+
+      const causes = json.causes || [];
+      if (!causes.length) {
+        throw new Error('No causes returned — the model may not have recognised the trace format.');
+      }
+
+      resultsMeta.textContent = `${causes.length} cause${causes.length !== 1 ? 's' : ''} · ${esc(json.extracted?.exceptionType || 'unknown exception')}`;
+      resultsBody.innerHTML = causes.map((c, i) => `
+        <tr class="border-b border-surface-container-highest hover:bg-surface-container/50 transition-colors">
+          <td class="px-space-md py-space-sm">
+            <span class="font-label-code text-label-code text-outline">#${i + 1}</span>
+          </td>
+          <td class="px-space-md py-space-sm">
+            <span class="font-body-md text-body-md text-on-surface font-medium">${esc(c.cause)}</span>
+          </td>
+          <td class="px-space-md py-space-sm">
+            <div class="flex items-center gap-space-xs">
+              <div class="flex-1 h-1.5 rounded-full bg-surface-container-highest overflow-hidden">
+                <div class="h-full rounded-full bg-current ${confidenceClass(c.confidence)}" style="width:${Math.min(100, Math.max(0, c.confidence))}%"></div>
+              </div>
+              <span class="font-label-code text-label-code ${confidenceClass(c.confidence)} w-8 text-right">${c.confidence}</span>
+            </div>
+          </td>
+          <td class="px-space-md py-space-sm">
+            <span class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">${esc(c.reasoning)}</span>
+          </td>
+        </tr>`).join('');
+
+      resultsSection.classList.remove('hidden');
+    } catch (err) {
+      errorText.textContent = err.message;
+      errorSection.classList.remove('hidden');
+    } finally {
+      triageBtn.innerHTML = ORIG_BTN;
+      triageBtn.disabled = false;
+    }
+  }
+
+  triageBtn.addEventListener('click', runTriage);
+  traceInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) runTriage();
+  });
+})();
+</script>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-1;"></canvas>
+<div id="cursor-glow" style="position:fixed;width:500px;height:500px;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle, rgba(78,222,163,0.10), transparent 70%); transform:translate(-50%,-50%);"></div>
+<script>
+  const glow = document.getElementById('cursor-glow');
+  window.addEventListener('mousemove', e => { glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+
+  const canvas = document.getElementById('bg-canvas'), ctx = canvas.getContext('2d');
+  let w, h, particles;
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  function initParticles() {
+    particles = Array.from({ length: 50 }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 1.5 + 0.5
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(78,222,163,0.25)';
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); initParticles(); draw();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+</script>
+</body>
+</html>
