@@ -1,4 +1,4 @@
-# RepoGuide
+<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/46317bdd-8564-4c2b-b43a-1d44a3c36cea" /># RepoGuide
 
 **Turn any unfamiliar codebase into a guided path to your first commit.**
 
@@ -8,6 +8,31 @@ RepoGuide reads a repository, explains its architecture in plain English, surfac
 safe first tasks for a new developer, and answers questions with citations it
 independently verifies against the real source before showing you an answer — plus
 a separate Error Triage tool for ranking likely causes of a stack trace.
+
+🔗 **Live demo:** [RepoGuid](https://repoguide-xckc.onrender.com/)
+<img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/05eeb8f1-1feb-414b-8983-4e3719de867f" />
+
+---
+
+## Screenshots
+
+**Landing page**
+![RepoGuide landing page](<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/6100b1dd-3c86-415b-af90-adc158eda89e" />
+)
+
+**Dashboard — architecture summary, stats, and first tasks**
+![RepoGuide dashboard](<img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/4a348dbc-1eda-49c9-ba06-72bdbca40546" />
+)
+
+**Grounded Q&A with verified citations**
+![Grounded Q&A with citation verification](<img width="1917" height="896" alt="image" src="https://github.com/user-attachments/assets/68cbf0f4-ccaa-407f-9fba-fc07d2241621" />
+)
+
+**Error Triage — ranked likely causes**
+![Error Triage results table](<img width="1917" height="958" alt="image" src="https://github.com/user-attachments/assets/8c954957-3411-43ca-b0db-40a22514e72c" />
+)
+
+---
 
 ## Features
 
@@ -52,6 +77,8 @@ public/
 index.html -- animated landing page
 app.html -- the dashboard (analyze + Q&A)
 triage.html -- the Error Triage page
+screenshots/ -- images used in this README
+bob_sessions/ -- Bob IDE task session evidence
 
 
 ## Built with IBM Bob 2.0
@@ -61,6 +88,10 @@ Q&A, and citation-verification agents; to debug real issues (a JSON-escaping bug
 by switching to a delimited output format, a rate-limit retry system, and a citation
 line-range parsing bug); and to build the entire Error Triage feature end-to-end.
 Task session evidence is in [`bob_sessions/`](./bob_sessions).
+
+## Tech stack
+
+Node.js · TypeScript · Express · Google Gemini API · Groq API · HTML/CSS/JS
 
 ## Notes
 
