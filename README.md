@@ -1,4 +1,5 @@
-<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/46317bdd-8564-4c2b-b43a-1d44a3c36cea" /># RepoGuide
+# RepoGuide
+<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/46317bdd-8564-4c2b-b43a-1d44a3c36cea" />
 
 **Turn any unfamiliar codebase into a guided path to your first commit.**
 
@@ -17,8 +18,8 @@ a separate Error Triage tool for ranking likely causes of a stack trace.
 ## Screenshots
 
 **Landing page**
-![RepoGuide landing page](<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/6100b1dd-3c86-415b-af90-adc158eda89e" />
-)
+![RepoGuide landing page]<img width="1917" height="906" alt="image" src="https://github.com/user-attachments/assets/6100b1dd-3c86-415b-af90-adc158eda89e" />
+
 
 **Dashboard — architecture summary, stats, and first tasks**
 ![RepoGuide dashboard](<img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/4a348dbc-1eda-49c9-ba06-72bdbca40546" />
